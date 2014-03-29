@@ -1,0 +1,93 @@
+# zsh-hints
+# Easily display non-completable information below the buffer. 
+# Written by Joep van Delft, 2014. 
+
+emulate -L zsh
+setopt extended_glob
+
+name=${WIDGET#zsh-hints-}
+
+# Locate the library file by explicit setting or guesswork: 
+zstyle -s ":zsh-hints:$name:" file hintfile || {
+    zstyle -s ":zsh-hints:$name:" dir hintdir || \
+        hintdir="${XDG_DATA_HOME:-~/.local/share}/zsh"
+    zstyle -s ":zsh-hints:$name:" ext hintext || \
+        hintext="hints"
+    hintfile="$hintdir/${name}${hintext:+.$hintext}"
+}
+if [[ ! -r "$~hintfile" ]]; then
+    print "Library file $~hintfile not found for $WIDGET." >&2
+    return 1
+fi
+
+# Get the configuration for the styles: 
+zstyle -b ":zsh-hints:$name:" verbose verbose || verbose=yes
+zstyle -s ":zsh-hints:$name:" pri_sep pri_sep || pri_sep='#'
+zstyle -s ":zsh-hints:$name:" sec_sep sec_sep || sec_sep="$pri_sep"
+zstyle -s ":zsh-hints:$name:" margin  margin  || margin=6
+
+# Establish the available lines for display: 
+if [[ $verbose == "yes" ]]; then
+    dl=$((${LINES}-${margin}-1))
+else
+    dl=$((${LINES}-$margin))
+fi
+
+# Store the contents of the help file in an array. The reason that
+# this is separated from the output generation, is because the 
+# output depends on the longest 'key', or first word of a line. 
+# As ZSH does not support multidimensional arrays, an emulation
+# of multidimensional arrays is attempted by the names of the
+# keys of the associative array txt, with the keys of the form 
+# 02_03. Pattern matching on the keys makes it work like an 
+# associative array. 
+declare -A txt      # The main data structure. 
+declare -Z 2 i j    # Counters with leading zeros. 
+len_k=0
+i=0
+
+for line in "${(f)$(<${~hintfile})}"; do
+    i=$(($i+1))
+    for j in {1..${#${(s: :)line}}}; do
+        txt[${i}_${j}]=${${(s: :)line}[$j]}
+    done
+    # Get a reasonable estimate len_k of the maximum length 
+    # of the relevant keys:
+    #print $i, $dl
+    (( $i<=$dl )) && (( $#txt[${i}_01]>$len_k )) && len_k=$#txt[${i}_01]
+done
+
+output_txt() {
+    for hint_no in ${(ou)${(k)txt[@]}%_*}; do
+        # Looping over the (unique and ordered) numerical part before 
+        # the underscore of the keys of txt-array. A.K.A. the hint_no
+        # identifying a line. 
+        v=$(($v+1))
+        if (( $v > $dl )); then
+            [[ "$verbose" == "yes" ]] && print "   ...$(( $i-$hint_no )) hints omitted."
+            break
+        fi
+        # Get the ordered indexes of words belonging matching the current line: 
+        for word in ${(oM)${(k)txt[@]}:#$hint_no*}; do
+            if [[ -z ${word:#*01} ]]; then
+                # It is the first word: Special treatment. 
+                printf "%-${len_k}s %s" "$txt[$word]" "$pri_sep"
+                d=$(($len_k+2))
+            elif (( $d+1+$#txt[$word] <= $COLUMNS )); then
+                # It is not a key, and it fits on the current line.
+                printf " %s" "$txt[$word]"
+                d=$(($d+1+$#txt[$word]))
+            else
+                # It is not a key and does not fit on current line.
+                printf "\n%-${len_k}s %s %s" " " "$sec_sep" "$txt[$word]"
+                d=$(($len_k+$#txt[$word]))
+                v=$(($v+1))
+            fi
+        done
+        printf "\n"
+    done
+}
+
+zle -M "$(output_txt)"
+
+# vim: ft=zsh

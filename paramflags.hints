@@ -1,0 +1,36 @@
+@          array elements
+c          count elements of array/string
+k,v        returns keys, values of associative array
+u          unique, deduplicate entries
+A(A)       create (associative) array, useful with ${(A)...=...}
+s:string:  field splitting at string
+f          split at newlines (ps:\\n:)
+z (Z:opt:) split result into shell words
+0          split with 0-bytes: ps:\\0:
+j:string:  join words of array with string as separator
+F          join words of array with newlines (pj:\\n:)
+w          count words, use s to define word delimiter
+W          count words, double delimiters count doubly
+i          sort case insensitive. Combine with n, O
+n          sort numerically
+o          sort in ascending order
+O          reverse sort order
+a          sort in array index order (with O reversed)
+U          convert to uppercase
+L          convert to lowercase
+V          make special characters visible
+q          quote, double quote, single quote, 
+Q          remove level of quoting
+C          capitalize first letters of words in result
+l:e:       pad (e)expression to the left. 
+r:e:       right pad (e)xpression
+D          substitute shortened names for directories (~)
+%          expand %-escapes as in prompts
+p          recognize same escape sequences as print
+g:opts:    process escape sequences
+e          eval: parameter expansion, command substitution and arithmetic expansion on result
+P          interpret value of parameter as a parameter
+t          diplay variable type
+X          report errors with pattern matching forms
+#          interpret as numeric expression
+m          multibyte magic

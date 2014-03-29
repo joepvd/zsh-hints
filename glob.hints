@@ -1,0 +1,32 @@
+/             directories
+F             non-empty directories (`full`)
+.             plain files
++             executable plain files
+l[-+]n        link count 
+r,w,x         owner (r)eadable (w)ritable, e(x)ecutable files
+A,I,E         group re(A)dable wr(I)table, (E)xecutable files
+R,W,X         world (R)readable, (W)ritable, e(X)ecutable files
+s,G,t         setuid, setgid, sticky bit files
+f[+=-]NNN     files with access rights matching +,-,= octal number
+{U,G}NNN      owned by effective (U)ser,(G)roup ID
+{u,g}NNN      owned by user, group id `NNN`
+{u,g}:name:   owned by user, group name `name`
+a,m,c         Access, Mod, and inode change time: File system attributes
+Mwhms][-+]n   Month, week, hours, minutes, seconds; less or more than n. 
+L[+|-]n[km]   files -,+ n bytes (kbytes, mbytes)
+n             numeric sort for current pattern
+(oO)[nLlamdN] order{, reversely} by name, size, link count, time(access,mod), subdirs first
+(oO)N         no order
+i,I           Case insensitive, sensitive
+l             Lowercase in pattern is case insensitive
+b,B           Activate, deactivate Backreferences. 
+m,M           Faster backreferences that do not work for filenames
+^             negates subsequent qualifiers
+1.            toggle follow symbolic links (default: on)
+[beg[,end]]   range
+N             NULL_GLOB for current pattern
+D             GLOB_DOTS for current pattern
+M             sets the MARK_DIRS option for the current pattern
+T             appends trailing qualifier mark to filenames
+Pstring       prepend: *(P:-f:) --> -f file1 -f file2
+estring       execute string as shell code

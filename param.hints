@@ -1,0 +1,26 @@
+${+n}   1 if n is set, 0 otherwise
+${n-w}  if n is set, $n, else w
+${n:-w} if n is set an nonzero, $n, else w
+${n+w}  if n is set, substitute w, else empty   
+${n:+w} if n is set and non-zero, substitute w, else empty
+${n=w}  if n is unset, set it to w
+${n:=w} if n is unset or null, set it to w
+${n::=w} Equivalent to n=w
+${n?w}  if n is set, substitute value, else exit/return with w
+${n:?w} if n is set, n != ""; substitute value, else exit/return with w
+${n#p}  remove pattern p from start
+${n##p} greedily remove pattern p from start
+${n%p}  remove pattern p from end
+${n%%p} greedily remove pattern p from end
+${n:#p} if p matches $p, then empty. reverse result with (M)
+${n/p/r} replace leftmost longest possible match of pattern p value of n with r.
+${n//p/r} globally replace match of p in n with r
+${#spec} return length of result
+${^spec} RC_EXPAND_PARAM on: Operate on all array items
+${^^spec} disable RC_EXPAND_PARAM
+${=spec} SH_WORD_SPLIT
+${==spec} no SH_WORD_SPLIT
+${~spec} enable GLOB_SUBST
+${~~spec} disable GLOB_SUBST
+
+
