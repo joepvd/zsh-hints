@@ -1,7 +1,38 @@
 # zsh-hints #
 
 
-``zsh-hints`` is a small helper utility that displays hints right below your editing buffer.  Intended use is to make incompletable trivia like zsh flags available without interfering with your work flow. 
+``zsh-hints`` is a small helper utility that displays hints right below the command you are typing.  Intended use is to make trivia that are not suitable for completing, like zsh flags, available without interfering with your work flow.  An example says more than thousand words. While typing a command, you suddenly are not sure about the parameter expansion flags.  Pressing ``<CTRL-X><f>`` displays the information, and you can continue to write your command without interruption: 
+
+    % for i in *; do print ${(on<CTRL-X><f>
+    @         ▶ array elements
+    c         ▶ count elements of array/string
+    k,v       ▶ returns keys, values of associative array
+    u         ▶ unique, deduplicate entries
+    A(A)      ▶ create (associative) array, useful with
+                ${(A)...=...}
+    s:string: ▶ field splitting at string
+    f         ▶ split at newlines (ps:\\n:)
+    z         ▶ (Z:opt:) split result into shell words
+    0         ▶ split with 0-bytes: ps:\\0:
+    j:string: ▶ join words of array with string as separator
+    F         ▶ join words of array with newlines (pj:\\n:)
+    w         ▶ count words, use s to define word delimiter
+    W         ▶ count words, double delimiters count doubly
+    i         ▶ sort case insensitive. Combine with n, O
+    n         ▶ sort numerically
+    o         ▶ sort in ascending order
+    O         ▶ reverse sort order
+    a         ▶ sort in array index order (with O reversed)
+    U         ▶ convert to uppercase
+    L         ▶ convert to lowercase
+    V         ▶ make special characters visible
+       ...14 hints omitted.
+
+Note that this is on a rather small terminal, some hints needed to be
+omitted, and there is a line wrapping at A(A). It is really easy to
+change the hints files, so you can just make a list of things you are
+currently learning. 
+
 
 The hints, or definitions, are read from a file, where the characters before the first space are considered as a key, and the rest as the explanation.  This means that it is extremely easy to create and use your own hint files.  
 
