@@ -5,9 +5,16 @@
 emulate -L zsh
 setopt extended_glob
 
-name=${WIDGET#zsh-hints-}
+local name 
 
-# Locate the library file by explicit setting or guesswork: 
+if [[ -n $ZSHHINTSWIDGET ]];then
+    name=${ZSHHINTSWIDGET#zsh-hints-}
+else
+    name=${WIDGET#zsh-hints-}
+fi
+
+# Locate the library file by explicit setting or guesswork:
+local hintdir hintext hintfile
 zstyle -s ":zsh-hints:$name:" file hintfile || {
     zstyle -s ":zsh-hints:$name:" dir hintdir || \
         hintdir="${XDG_DATA_HOME:-~/.local/share}/zsh"
@@ -20,13 +27,15 @@ if [[ ! -r "$~hintfile" ]]; then
     return 1
 fi
 
-# Get the configuration for the styles: 
+# Get the configuration for the styles:
+local verbose pri_sep sec_sep margin
 zstyle -b ":zsh-hints:$name:" verbose verbose || verbose=yes
 zstyle -s ":zsh-hints:$name:" pri_sep pri_sep || pri_sep='#'
 zstyle -s ":zsh-hints:$name:" sec_sep sec_sep || sec_sep="$pri_sep"
 zstyle -s ":zsh-hints:$name:" margin  margin  || margin=6
 
-# Establish the available lines for display: 
+# Establish the available lines for display:
+local dl
 if [[ $verbose == "yes" ]]; then
     dl=$((${LINES}-${margin}-1))
 else
@@ -42,10 +51,9 @@ fi
 # 02_03. Pattern matching on the keys makes it work like an 
 # associative array. 
 declare -A txt      # The main data structure. 
-declare -Z 2 i j    # Counters with leading zeros. 
-len_k=0
-i=0
+declare -Z 2 j i=0  # Counters with leading zeros. 
 
+local line len_k=0
 for line in "${(f)$(<${~hintfile})}"; do
     i=$(($i+1))
     for j in {1..${#${(s: :)line}}}; do
@@ -58,6 +66,7 @@ for line in "${(f)$(<${~hintfile})}"; do
 done
 
 output_txt() {
+    local d word hint_no v=1
     for hint_no in ${(ou)${(k)txt[@]}%_*}; do
         # Looping over the (unique and ordered) numerical part before 
         # the underscore of the keys of txt-array. A.K.A. the hint_no
